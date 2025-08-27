@@ -1,0 +1,98 @@
+﻿@model IEnumerable<JobPortalWeb.Models.Application>
+
+@{
+    ViewData["Title"] = "مدیریت درخواست‌ها (ادمین)";
+}
+
+<div class="container mt-4">
+    <h2>مدیریت درخواست‌ها</h2>
+
+    <!-- خلاصه آماری -->
+    <div class="row text-center mb-4">
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5>کل درخواست‌ها</h5>
+                    <h3>@ViewBag.Total</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm bg-warning bg-opacity-25">
+                <div class="card-body">
+                    <h5>در حال انتظار</h5>
+                    <h3>@ViewBag.Pending</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm bg-success bg-opacity-25">
+                <div class="card-body">
+                    <h5>پذیرفته‌شده</h5>
+                    <h3>@ViewBag.Accepted</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm bg-danger bg-opacity-25">
+                <div class="card-body">
+                    <h5>ردشده</h5>
+                    <h3>@ViewBag.Rejected</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- فیلتر وضعیت -->
+    <form method="get" class="mb-3">
+        <select name="status" class="form-select w-auto d-inline">
+            <option value="">همه وضعیت‌ها</option>
+            <option value="Pending">در حال انتظار</option>
+            <option value="Accepted">پذیرفته‌شده</option>
+            <option value="Rejected">ردشده</option>
+        </select>
+        <button type="submit" class="btn btn-primary">فیلتر</button>
+    </form>
+
+    <!-- جدول درخواست‌ها -->
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>کد</th>
+                <th>کار</th>
+                <th>کارفرما</th>
+                <th>جویای کار</th>
+                <th>رزومه</th>
+                <th>تاریخ درخواست</th>
+                <th>وضعیت</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var app in Model)
+            {
+                <tr>
+                    <td>@app.Id</td>
+                    <td>@app.Job?.Title</td>
+                    <td>@app.Job?.Employer?.UserName</td>
+                    <td>@app.Seeker?.UserName</td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(app.ResumePath))
+                        {
+                            <a href="@app.ResumePath" target="_blank" class="btn btn-sm btn-outline-primary">دانلود</a>
+                        }
+                        else
+                        {
+                            <span class="text-muted">ندارد</span>
+                        }
+                    </td>
+                    <td>@app.AppliedAt.ToLocalTime().ToString("yyyy/MM/dd HH:mm")</td>
+                    <td>
+                        <span class="badge @(app.Status=="Pending"?"bg-warning": app.Status=="Accepted"?"bg-success":"bg-danger")">
+                            @app.Status
+                        </span>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,72 @@
+﻿@model JobPortalWeb.Models.Job
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<JobPortalWeb.Areas.Identity.Data.ApplicationUser> UserManager
+
+@{
+    ViewData["Title"] = "جزئیات آگهی شغلی";
+    var me = User?.Identity?.IsAuthenticated == true ? await UserManager.GetUserAsync(User) : null;
+}
+
+<div class="container mt-4">
+    <h2>@Model.Title</h2>
+    <p><strong>کارفرما:</strong> @Model.Employer.UserName</p>
+    <p><strong>توضیحات:</strong> @Model.Description</p>
+    <p><strong>مکان:</strong> @Model.Location</p>
+    <p><strong>حقوق:</strong> @($"{Model.SalaryMin?.ToString("N0")} - {Model.SalaryMax?.ToString("N0")}")</p>
+    <p><strong>نوع کار:</strong> @Model.JobType</p>
+    <p><strong>سطح تجربه:</strong> @Model.ExperienceLevel</p>
+    <p><strong>تاریخ ایجاد:</strong> @Model.CreatedAt.ToLocalTime().ToString("yyyy/MM/dd")</p>
+    <p>
+        <strong>وضعیت:</strong>
+        @if (Model.IsActive)
+        {
+            <span class="badge bg-success">فعال</span>
+        }
+        else
+        {
+            <span class="badge bg-danger">غیرفعال</span>
+        }
+    </p>
+
+    <!-- دکمه مشاهده پروفایل -->
+    <a asp-controller="EmployerProfile"
+       asp-action="Details"
+       asp-route-userId="@Model.EmployerId"
+       class="btn btn-outline-info btn-sm mb-3">
+        مشاهده پروفایل کارفرما
+    </a>
+
+    <!-- پیام‌ها -->
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">@TempData["Success"]</div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">@TempData["Error"]</div>
+    }
+
+    <!-- فرم ارسال درخواست فقط برای Seeker ها -->
+    @if (me != null && me.IsSeeker == true && Model.IsActive)
+    {
+        <div class="card mt-4">
+            <div class="card-body">
+                <h5 class="card-title">ارسال درخواست</h5>
+                <form asp-controller="Application" asp-action="Apply" method="post" enctype="multipart/form-data">
+                    <input type="hidden" name="JobId" value="@Model.Id" />
+
+                    <div class="mb-3">
+                        <label for="resumeFile" class="form-label">رزومه</label>
+                        <input type="file" name="ResumeFile" class="form-control" required />
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">ارسال درخواست</button>
+                </form>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,124 @@
+﻿@using JobPortalWeb.Areas.Identity.Data
+@model IEnumerable<JobPortalWeb.Models.Job>
+@inject Microsoft.AspNetCore.Identity.UserManager<ApplicationUser> UserManager
+
+@{
+    ViewData["Title"] = "Smart Job Portal";
+    ApplicationUser? me = null;
+    if (User?.Identity?.IsAuthenticated ?? false)
+    {
+        me = await UserManager.GetUserAsync(User);
+    }
+}
+
+<div class="container py-4">
+
+    <!-- Hero -->
+    <div class="p-4 p-md-5 mb-4 bg-light rounded-3 border">
+        <div class="container-fluid py-3">
+            <h1 class="display-6 fw-bold mb-2">خوش آمدید به Smart Job Portal</h1>
+            <p class="lead mb-3">
+                جستجوی شغل، ارسال رزومه، مدیریت آگهی‌ها و بررسی درخواست‌ها — همه در یک مکان.
+            </p>
+
+            @if (!(User?.Identity?.IsAuthenticated ?? false))
+            {
+                <div class="d-flex gap-2">
+                    <a asp-controller="Account" asp-action="Register" class="btn btn-primary btn-lg">ثبت‌نام</a>
+                    <a asp-controller="Account" asp-action="Login" class="btn btn-outline-primary btn-lg">ورود</a>
+                </div>
+            }
+            else
+            {
+                <div class="d-flex flex-wrap gap-2">
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <a asp-controller="Admin" asp-action="Applications" class="btn btn-dark btn-lg">مدیریت درخواست ها</a>
+                        <a asp-controller="Admin" asp-action="Users" class="btn btn-dark btn-lg">مدیریت کاربران</a>
+                        <a asp-controller="Admin" asp-action="Jobs" class="btn btn-dark btn-lg">مدیریت آگهی ها </a>
+                    }
+
+                    <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-danger btn-lg">خروج</button>
+                    </form>
+
+                    @if (me?.IsEmployer == true)
+                    {
+                        <a asp-controller="Job" asp-action="CreateJob" class="btn btn-success btn-lg">ثبت آگهی جدید</a>
+                        <a asp-controller="Application" asp-action="EmployerApplications" class="btn btn-outline-success btn-lg">داشبورد درخواست ها</a>
+                    }
+
+                    @if (me?.IsSeeker == true)
+                    {
+                        <a asp-controller="Application" asp-action="MyApplications" class="btn btn-outline-secondary btn-lg">درخواست‌های من</a>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- فرم سرچ -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form asp-controller="Home" asp-action="Index" method="get" class="row gy-2 gx-2 align-items-end">
+                <div class="col-md-4">
+                    <label class="form-label">عنوان شغل</label>
+                    <input type="text" name="title" value="@Context.Request.Query["title"]" class="form-control" placeholder="مثلاً: Backend Developer">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">شهر / موقعیت</label>
+                    <input type="text" name="location" value="@Context.Request.Query["location"]" class="form-control" placeholder="مثلاً: تهران">
+                </div>
+                <div class="col-md-4">
+                    <button type="submit" class="btn btn-primary w-100">جستجو</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- آگهی‌های جدید -->
+    <div class="mt-4">
+        <h5 class="mb-3">آگهی‌های جدید</h5>
+
+        @if (Model != null && Model.Any())
+        {
+            <div class="row g-3">
+                @foreach (var job in Model)
+                {
+                    <div class="col-md-4">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-body">
+                                <h5 class="card-title">@job.Title</h5>
+                                <h6 class="card-subtitle mb-2 text-muted">@job.Location</h6>
+                                <p class="card-text">
+                                    @if (!string.IsNullOrEmpty(job.Description))
+                                    {
+                                        @((job.Description.Length > 100) ? job.Description.Substring(0, 100) + "..." : job.Description)
+                                    }
+                                </p>
+                                <p class="card-text">
+                                    <strong>حقوق:</strong> @($"{job.SalaryMin?.ToString("N0")} - {job.SalaryMax?.ToString("N0")}") <br />
+                                    <strong>نوع کار:</strong> @job.JobType <br />
+                                    <strong>سطح تجربه:</strong> @job.ExperienceLevel
+                                </p>
+                                <a asp-controller="Home" asp-action="JobDetails" asp-route-id="@job.Id" class="btn btn-primary">جزئیات</a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-info">
+                هیچ آگهی شغلی فعالی وجود ندارد.
+            </div>
+        }
+    </div>
+
+</div>
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+}

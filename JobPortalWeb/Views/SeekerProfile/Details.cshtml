@@ -1,0 +1,69 @@
+﻿@model JobPortalWeb.ViewModels.SeekerProfileViewModel
+
+@{
+    ViewData["Title"] = "جزئیات پروفایل کارجو";
+}
+
+<div class="card shadow-lg border-0 rounded-3 mt-4">
+    <div class="card-header bg-primary text-white">
+        <h4 class="mb-0">پروفایل کارجو</h4>
+    </div>
+    <div class="card-body">
+        <div class="row mb-3">
+            <div class="col-md-3 fw-bold">نام کامل:</div>
+            <div class="col-md-9">@Model.FullName</div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-3 fw-bold">ایمیل:</div>
+            <div class="col-md-9">@Model.Email</div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-3 fw-bold">تحصیلات:</div>
+            <div class="col-md-9">
+                @if (!string.IsNullOrEmpty(Model.Education))
+                {
+                    @Model.Education
+                }
+                else
+                {
+                    <span class="text-muted">اطلاعات وارد نشده</span>
+                }
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-3 fw-bold">تجربه کاری:</div>
+            <div class="col-md-9">
+                @if (!string.IsNullOrEmpty(Model.Experience))
+                {
+                    @Model.Experience
+                }
+                else
+                {
+                    <span class="text-muted">اطلاعات وارد نشده</span>
+                }
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-3 fw-bold">مهارت‌ها:</div>
+            <div class="col-md-9">
+                @if (!string.IsNullOrEmpty(Model.Skills))
+                {
+                    @Model.Skills
+                }
+                else
+                {
+                    <span class="text-muted">اطلاعات وارد نشده</span>
+                }
+            </div>
+        </div>
+    </div>
+    
+        <a asp-action="Index" asp-controller="Home" class="btn btn-secondary">
+            بازگشت
+        </a>
+    </div>
+</div>

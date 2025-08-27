@@ -1,0 +1,80 @@
+﻿@model JobPortalWeb.ViewModels.CreateJobViewModel
+
+@{
+    ViewData["Title"] = "ثبت آگهی شغلی جدید";
+}
+
+<h2 class="mb-4">ثبت آگهی شغلی جدید</h2>
+
+<!-- نمایش پیام‌ها -->
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+
+<form asp-action="CreateJob" method="post">
+    <div class="form-group mb-3">
+        <label asp-for="Title" class="form-label"></label>
+        <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="Description" class="form-label"></label>
+        <textarea asp-for="Description" class="form-control" rows="5"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="Location" class="form-label"></label>
+        <input asp-for="Location" class="form-control" />
+        <span asp-validation-for="Location" class="text-danger"></span>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col">
+            <label asp-for="SalaryMin" class="form-label"></label>
+            <input asp-for="SalaryMin" class="form-control" />
+            <span asp-validation-for="SalaryMin" class="text-danger"></span>
+        </div>
+        <div class="col">
+            <label asp-for="SalaryMax" class="form-label"></label>
+            <input asp-for="SalaryMax" class="form-control" />
+            <span asp-validation-for="SalaryMax" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="JobType" class="form-label"></label>
+        <select asp-for="JobType" class="form-select">
+            <option value="">انتخاب کنید</option>
+            <option value="full_time">تمام وقت</option>
+            <option value="part_time">پاره وقت</option>
+            <option value="contract">قراردادی</option>
+        </select>
+        <span asp-validation-for="JobType" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="ExperienceLevel" class="form-label"></label>
+        <select asp-for="ExperienceLevel" class="form-select">
+            <option value="">انتخاب کنید</option>
+            <option value="entry">مبتدی</option>
+            <option value="mid">متوسط</option>
+            <option value="senior">حرفه‌ای</option>
+        </select>
+        <span asp-validation-for="ExperienceLevel" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">ثبت آگهی</button>
+    <a asp-action="Index" class="btn btn-secondary">بازگشت</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

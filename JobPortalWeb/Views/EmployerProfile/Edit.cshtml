@@ -1,0 +1,49 @@
+﻿@model JobPortalWeb.ViewModels.EmployerProfileViewModel
+
+@{
+    ViewData["Title"] = "ویرایش پروفایل کارفرما";
+}
+
+<div class="container py-4">
+    <h2 class="mb-4">ویرایش پروفایل کارفرما</h2>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">@TempData["Success"]</div>
+    }
+
+    <form asp-action="Edit" method="post">
+        <input type="hidden" asp-for="Id" />
+
+        <div class="mb-3">
+            <label asp-for="CompanyName" class="form-label"></label>
+            <input asp-for="CompanyName" class="form-control" />
+            <span asp-validation-for="CompanyName" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="CompanyDescription" class="form-label"></label>
+            <textarea asp-for="CompanyDescription" class="form-control"></textarea>
+            <span asp-validation-for="CompanyDescription" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Location" class="form-label"></label>
+            <input asp-for="Location" class="form-control" />
+            <span asp-validation-for="Location" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Website" class="form-label"></label>
+            <input asp-for="Website" class="form-control" />
+            <span asp-validation-for="Website" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Email" class="form-label"></label>
+            <input asp-for="Email" class="form-control" readonly />
+        </div>
+
+        <button type="submit" class="btn btn-primary">ذخیره تغییرات</button>
+    </form>
+</div>

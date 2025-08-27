@@ -1,0 +1,120 @@
+﻿@model IEnumerable<JobPortalWeb.Models.Job>
+
+@{
+    ViewData["Title"] = "مدیریت آگهی‌های شغلی";
+}
+
+<h2 class="mb-4">مدیریت آگهی‌های شغلی</h2>
+
+<!-- نمایش پیام‌ها -->
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+<div class="alert alert-info d-flex justify-content-around text-center">
+    <div>
+        <strong>@ViewBag.TotalJobs</strong><br />کل آگهی‌ها
+    </div>
+    <div>
+        <strong>@ViewBag.ApprovedJobs</strong><br />تایید شده
+    </div>
+    <div>
+        <strong>@ViewBag.PendingJobs</strong><br />در انتظار تایید
+    </div>
+</div>
+
+
+<!-- فیلتر ساده -->
+<form method="get" asp-action="Jobs" class="row g-2 mb-3">
+    <div class="col-md-4">
+        <input type="text" name="q" value="@Context.Request.Query["q"]" class="form-control" placeholder="جستجو (عنوان، توضیحات، کارفرما...)" />
+    </div>
+    <div class="col-md-3">
+        <select name="approved" class="form-select">
+            <option value="">همه</option>
+            <option value="true" selected="@(Context.Request.Query["approved"] == "true")">تأیید شده</option>
+            <option value="false" selected="@(Context.Request.Query["approved"] == "false")">رد شده</option>
+        </select>
+    </div>
+    <div class="col-md-2">
+        <button type="submit" class="btn btn-primary w-100">فیلتر</button>
+    </div>
+</form>
+
+<table class="table table-bordered table-striped align-middle">
+    <thead class="table-light">
+        <tr>
+            <th>عنوان</th>
+            <th>کارفرما</th>
+            <th>مکان</th>
+            <th>تاریخ ثبت</th>
+            <th>وضعیت</th>
+            <th>تأیید</th>
+            <th>عملیات</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var job in Model)
+        {
+            <tr>
+                <td>@job.Title</td>
+                <td>@job.Employer?.Email</td>
+                <td>@job.Location</td>
+                <td>@job.CreatedAt.ToLocalTime().ToString("yyyy/MM/dd HH:mm")</td>
+                <td>
+                    @if (job.IsActive)
+                    {
+                        <span class="badge bg-success">فعال</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">غیرفعال</span>
+                    }
+                </td>
+                <td>
+                    @if (job.IsApproved)
+                    {
+                        <span class="badge bg-success">تأیید شده</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-danger">رد شده</span>
+                    }
+                </td>
+                <td>
+                    <div class="d-flex gap-1">
+                        <!-- تایید -->
+                        <form asp-action="ApproveJob" method="post" class="d-inline">
+                            <input type="hidden" name="id" value="@job.Id" />
+                            <button type="submit" class="btn btn-sm btn-success">✔ تأیید</button>
+                        </form>
+
+                        <!-- رد -->
+                        <form asp-action="RejectJob" method="post" class="d-inline">
+                            <input type="hidden" name="id" value="@job.Id" />
+                            <button type="submit" class="btn btn-sm btn-warning">✖ رد</button>
+                        </form>
+
+                        <!-- فعال/غیرفعال -->
+                        <form asp-action="ToggleActive" method="post" class="d-inline">
+                            <input type="hidden" name="id" value="@job.Id" />
+                            <button type="submit" class="btn btn-sm btn-secondary">
+                                @(job.IsActive ? "غیرفعال" : "فعال")
+                            </button>
+                        </form>
+
+                        <!-- حذف -->
+                        <form asp-action="DeleteJob" method="post" class="d-inline" onsubmit="return confirm('آیا مطمئن هستید؟');">
+                            <input type="hidden" name="id" value="@job.Id" />
+                            <button type="submit" class="btn btn-sm btn-danger">🗑 حذف</button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

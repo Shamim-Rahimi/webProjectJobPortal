@@ -1,0 +1,217 @@
+﻿
+body {
+    background-color: #f8f9fa;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.card {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.card-header {
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+}
+
+.card-body {
+    padding: 2rem;
+}
+
+.form-control {
+    border-radius: 8px;
+    padding: 0.6rem 0.8rem;
+}
+
+textarea.form-control {
+    resize: none;
+}
+
+.btn-primary {
+    border-radius: 8px;
+    padding: 0.7rem;
+    font-weight: 600;
+}
+
+footer {
+    margin-top: auto;
+    background-color: #f1f3f5;
+    padding: 1.5rem 0;
+    font-size: 0.9rem;
+}
+
+.employer-field,
+.seeker-field {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .card-body {
+        padding: 1.5rem;
+    }
+}
+
+/* ================= Hero Section ================= */
+.bg-light.rounded-3.border {
+    background: linear-gradient(135deg, #1a73e8, #4285f4);
+    color: white;
+    padding: 2rem;
+}
+
+    .bg-light.rounded-3.border h1,
+    .bg-light.rounded-3.border p {
+        color: white;
+    }
+
+    .bg-light.rounded-3.border .btn-primary {
+        background-color: #ff6f61;
+        border-color: #ff6f61;
+    }
+
+    .bg-light.rounded-3.border .btn-outline-primary {
+        color: white;
+        border-color: white;
+    }
+
+        .bg-light.rounded-3.border .btn-outline-primary:hover {
+            background-color: rgba(255,255,255,0.2);
+        }
+
+/* ================= User Buttons Section ================= */
+.btn-lg {
+    min-width: 150px;
+    margin-bottom: 5px;
+}
+
+.d-flex.flex-wrap.gap-2 {
+    flex-wrap: wrap;
+}
+
+/* ================= Cards (Jobs & Features) ================= */
+.card.h-100.shadow-sm {
+    border-radius: 12px;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+    .card.h-100.shadow-sm:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    }
+
+.card-body h5, .card-body h6 {
+    margin-bottom: 0.5rem;
+}
+
+.card-body p {
+    font-size: 0.95rem;
+    color: #555;
+}
+
+/* ================= Search Form ================= */
+.card-body form .form-label {
+    font-weight: 500;
+}
+
+.card-body form .btn-primary {
+    background-color: #1a73e8;
+    border-color: #1a73e8;
+}
+
+.card-body input.form-control {
+    border-radius: 0.375rem;
+}
+
+/* ================= Alerts ================= */
+.alert-info {
+    background-color: #e7f3fe;
+    color: #0c5460;
+    border-color: #b8daff;
+}
+
+/* ================= Footer ================= */
+footer {
+    background-color: #f8f9fa;
+    padding: 2rem 0;
+    border-top: 1px solid #dee2e6;
+}
+
+    footer h5 {
+        margin-bottom: 0.5rem;
+        font-weight: bold;
+    }
+
+    footer p {
+        margin-bottom: 0;
+        color: #6c757d;
+    }
+
+/* ================= Buttons Variants ================= */
+.btn-dark {
+    background-color: #343a40;
+    border-color: #343a40;
+    color: white;
+}
+
+    .btn-dark:hover {
+        background-color: #23272b;
+        border-color: #1d2124;
+    }
+
+.btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+    .btn-success:hover {
+        background-color: #218838;
+        border-color: #1e7e34;
+    }
+
+.btn-outline-success {
+    color: #28a745;
+    border-color: #28a745;
+}
+
+    .btn-outline-success:hover {
+        background-color: #28a745;
+        color: white;
+    }
+
+.btn-outline-secondary {
+    color: #6c757d;
+    border-color: #6c757d;
+}
+
+    .btn-outline-secondary:hover {
+        background-color: #6c757d;
+        color: white;
+    }
+
+.btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    color: white;
+}
+
+    .btn-danger:hover {
+        background-color: #c82333;
+        border-color: #bd2130;
+    }
+
+/* ================= Responsiveness ================= */
+@media (max-width: 768px) {
+    .d-flex.flex-wrap.gap-2 {
+        flex-direction: column;
+    }
+
+    .card.h-100.shadow-sm {
+        margin-bottom: 1rem;
+    }
+
+    .bg-light.rounded-3.border {
+        padding: 1rem;
+    }
+}

@@ -1,0 +1,132 @@
+﻿@model List<JobPortalWeb.ViewModels.AdminUserListItemVM>
+
+@{
+    ViewData["Title"] = "مدیریت کاربران";
+}
+
+<h2>مدیریت کاربران</h2>
+
+<!-- پیام موفقیت/خطا -->
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<div class="alert alert-info d-flex justify-content-around text-center">
+    <div>
+        <strong>@ViewBag.TotalUsers</strong><br />کل کاربران
+    </div>
+    <div>
+        <strong>@ViewBag.Employers</strong><br />کارفرما
+    </div>
+    <div>
+        <strong>@ViewBag.Seekers</strong><br />کارجو
+    </div>
+    <div>
+        <strong>@ViewBag.Admins</strong><br />ادمین
+    </div>
+</div>
+
+
+<!-- فرم جستجو و فیلتر -->
+<form method="get" asp-action="Users" class="mb-3">
+    <input type="text" name="q" value="@Context.Request.Query["q"]" placeholder="جستجو (نام، ایمیل...)" class="form-control mb-2" />
+
+    <select name="type" class="form-select mb-2">
+        <option value="">-- همه کاربران --</option>
+        <option value="employer" selected="@(Context.Request.Query["type"] == "employer")">کارفرماها</option>
+        <option value="seeker" selected="@(Context.Request.Query["type"] == "seeker")">جویای کار</option>
+    </select>
+
+    <button type="submit" class="btn btn-primary">جستجو</button>
+</form>
+
+<!-- جدول کاربران -->
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>ایمیل</th>
+            <th>نام کامل</th>
+            <th>کارفرما</th>
+            <th>جویای کار</th>
+            <th>ادمین</th>
+            <th>وضعیت</th>
+            <th>عملیات</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var u in Model)
+        {
+            <tr>
+                <td>@u.Email</td>
+                <td>@u.FullName</td>
+                <td>@(u.IsEmployer ? "✔" : "✘")</td>
+                <td>@(u.IsSeeker ? "✔" : "✘")</td>
+                <td>@(u.IsAdmin ? "✔" : "✘")</td>
+                <td>
+                    @if (u.IsBanned)
+                    {
+                        <span class="badge bg-danger">مسدود</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-success">فعال</span>
+                    }
+                </td>
+                <td>
+                    <!-- دکمه Ban/Unban -->
+                    <form asp-action="ToggleBan" method="post" class="d-inline">
+                        <input type="hidden" name="id" value="@u.Id" />
+                        <button type="submit" class="btn btn-sm @(u.IsBanned ? "btn-success" : "btn-warning")">
+                            @(u.IsBanned ? "Unban" : "Ban")
+                        </button>
+                    </form>
+
+                    <!-- Employer -->
+                    <form asp-action="SetEmployer" method="post" class="d-inline">
+                        <input type="hidden" name="id" value="@u.Id" />
+                        <input type="hidden" name="make" value="@(u.IsEmployer ? "false" : "true")" />
+                        <button type="submit" class="btn btn-sm btn-info">
+                            @(u.IsEmployer ? "Remove Employer" : "Make Employer")
+                        </button>
+                    </form>
+
+                    <!-- Seeker -->
+                    <form asp-action="SetSeeker" method="post" class="d-inline">
+                        <input type="hidden" name="id" value="@u.Id" />
+                        <input type="hidden" name="make" value="@(u.IsSeeker ? "false" : "true")" />
+                        <button type="submit" class="btn btn-sm btn-info">
+                            @(u.IsSeeker ? "Remove Seeker" : "Make Seeker")
+                        </button>
+                    </form>
+
+                    <!-- Admin -->
+                    @if (u.IsAdmin)
+                    {
+                        <form asp-action="RemoveAdmin" method="post" class="d-inline">
+                            <input type="hidden" name="id" value="@u.Id" />
+                            <button type="submit" class="btn btn-sm btn-danger">Remove Admin</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <form asp-action="MakeAdmin" method="post" class="d-inline">
+                            <input type="hidden" name="id" value="@u.Id" />
+                            <button type="submit" class="btn btn-sm btn-success">Make Admin</button>
+                        </form>
+                    }
+
+                    <!-- Delete -->
+                    <form asp-action="DeleteUser" method="post" class="d-inline" onsubmit="return confirm('آیا مطمئن هستید؟');">
+                        <input type="hidden" name="id" value="@u.Id" />
+                        <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

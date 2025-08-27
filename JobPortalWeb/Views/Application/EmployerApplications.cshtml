@@ -1,0 +1,80 @@
+﻿@model IEnumerable<JobPortalWeb.Models.Application>
+
+@{
+    ViewData["Title"] = "درخواست‌های شغلی دریافتی";
+}
+
+<div class="container mt-4">
+    <div class="card shadow-lg border-0 rounded-3">
+        <div class="card-header bg-primary text-white">
+            <h3 class="mb-0">درخواست‌های دریافتی</h3>
+        </div>
+        <div class="card-body">
+
+            @if (!Model.Any())
+            {
+                <div class="alert alert-info text-center">
+                    <i class="bi bi-info-circle"></i> تاکنون هیچ درخواستی برای شغل‌های شما ثبت نشده است.
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>کارجو</th>
+                                <th>شغل</th>
+                                <th>رزومه</th>
+                                <th>تاریخ درخواست</th>
+                                <th>وضعیت</th>
+                                <th class="text-center">عملیات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var app in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        @app.Seeker.UserName
+                                        <a asp-controller="SeekerProfile" asp-action="Details" asp-route-id="@app.SeekerId"
+                                           class="btn btn-link btn-sm text-decoration-none ms-2">
+                                            <i class="bi bi-person"></i> پروفایل
+                                        </a>
+                                    </td>
+                                    <td>@app.Job.Title</td>
+                                    <td>
+                                        <a href="@Url.Content(app.ResumePath)" target="_blank" class="btn btn-outline-primary btn-sm">
+                                            <i class="bi bi-file-earmark-text"></i> مشاهده رزومه
+                                        </a>
+                                    </td>
+                                    <td>@app.AppliedAt.ToLocalTime().ToString("yyyy/MM/dd HH:mm")</td>
+                                    <td>
+                                        <span class="badge
+                                            @(app.Status == "Accepted" ? "bg-success" :
+                                              app.Status == "Rejected" ? "bg-danger" :
+                                              "bg-secondary")">
+                                            @app.Status
+                                        </span>
+                                    </td>
+                                    <td class="text-center">
+                                        <form asp-action="UpdateStatus" method="post" class="d-inline">
+                                            <input type="hidden" name="id" value="@app.Id" />
+                                            <button type="submit" name="status" value="Accepted" class="btn btn-success btn-sm me-1">
+                                                <i class="bi bi-check-circle"></i> قبول
+                                            </button>
+                                            <button type="submit" name="status" value="Rejected" class="btn btn-danger btn-sm">
+                                                <i class="bi bi-x-circle"></i> رد
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>

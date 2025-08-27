@@ -1,0 +1,96 @@
+﻿@model IEnumerable<JobPortalWeb.Models.Application>
+
+@{
+    ViewData["Title"] = "درخواست‌های من";
+}
+
+<div class="container mt-5">
+    <h2 class="mb-4 text-center fw-bold">📑 درخواست‌های من</h2>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info text-center">
+            شما هنوز هیچ درخواستی ارسال نکرده‌اید.
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive shadow rounded">
+            <table class="table table-hover align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>عنوان شغل</th>
+                        <th>کارفرما</th>
+                        <th>تاریخ ارسال</th>
+                        <th>وضعیت</th>
+                        <th>رزومه</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var app in Model)
+                    {
+                        <tr>
+                            <td>
+                                <a asp-controller="Job" asp-action="Details" asp-route-id="@app.JobId" class="text-decoration-none fw-bold">
+                                    @app.Job?.Title
+                                </a>
+                            </td>
+                            <td>@app.Job?.Employer?.UserName</td>
+                            <td>@app.AppliedAt.ToLocalTime().ToString("yyyy/MM/dd HH:mm")</td>
+                            <td>
+                                @if (app.Status == "Pending")
+                                {
+                                    <span class="badge bg-warning text-dark">در انتظار بررسی</span>
+                                }
+                                else if (app.Status == "Reviewed")
+                                {
+                                    <span class="badge bg-info text-dark">بررسی شده</span>
+                                }
+                                else if (app.Status == "Accepted")
+                                {
+                                    <span class="badge bg-success">تایید شده</span>
+                                }
+                                else if (app.Status == "Rejected")
+                                {
+                                    <span class="badge bg-danger">رد شده</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">@app.Status</span>
+                                }
+                            </td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(app.ResumePath))
+                                {
+                                    <a href="@app.ResumePath" target="_blank" class="btn btn-outline-primary btn-sm">
+                                        دانلود رزومه
+                                    </a>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">ندارد</span>
+                                }
+                            </td>
+                            <td>
+                                @if (app.Status == "Pending")
+                                {
+                                    <form asp-action="Delete" asp-controller="Application" asp-route-id="@app.Id" method="post" style="display:inline;">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger"
+                                                onclick="return confirm('آیا از حذف این درخواست مطمئن هستید؟');">
+                                            حذف
+                                        </button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">امکان حذف نیست</span>
+                                }
+                            </td>
+
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
