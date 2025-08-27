@@ -34,21 +34,31 @@
                     @if (User.IsInRole("Admin"))
                     {
                         <a asp-controller="Admin" asp-action="Applications" class="btn btn-dark btn-lg">مدیریت درخواست ها</a>
+                    }
+
+                    @if (User.IsInRole("Admin"))
+                    {
                         <a asp-controller="Admin" asp-action="Users" class="btn btn-dark btn-lg">مدیریت کاربران</a>
+                    }
+                    @if (User.IsInRole("Admin"))
+                    {
                         <a asp-controller="Admin" asp-action="Jobs" class="btn btn-dark btn-lg">مدیریت آگهی ها </a>
                     }
 
+                    <!-- دکمه خروج -->
                     <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
                         @Html.AntiForgeryToken()
                         <button type="submit" class="btn btn-danger btn-lg">خروج</button>
                     </form>
 
+                    @* عملیات مخصوص کارفرما *@
                     @if (me?.IsEmployer == true)
                     {
                         <a asp-controller="Job" asp-action="CreateJob" class="btn btn-success btn-lg">ثبت آگهی جدید</a>
                         <a asp-controller="Application" asp-action="EmployerApplications" class="btn btn-outline-success btn-lg">داشبورد درخواست ها</a>
                     }
 
+                    @* عملیات مخصوص جویای کار *@
                     @if (me?.IsSeeker == true)
                     {
                         <a asp-controller="Application" asp-action="MyApplications" class="btn btn-outline-secondary btn-lg">درخواست‌های من</a>
@@ -58,7 +68,7 @@
         </div>
     </div>
 
-    <!-- فرم سرچ -->
+    <!-- جستجوی سریع -->
     <div class="card mb-4">
         <div class="card-body">
             <form asp-controller="Home" asp-action="Index" method="get" class="row gy-2 gx-2 align-items-end">
@@ -77,10 +87,80 @@
         </div>
     </div>
 
-    <!-- آگهی‌های جدید -->
+
+    <!-- بخش‌های نقش‌محور -->
+    @if (User?.Identity?.IsAuthenticated ?? false)
+    {
+        <div class="row g-3">
+
+            @if (me?.IsEmployer == true)
+            {
+                <div class="col-lg-6">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title mb-3">میانبرهای کارفرما</h5>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span>تکمیل پروفایل</span>
+                                    <a asp-controller="EmployerProfile" asp-action="Edit" class="btn btn-sm btn-outline-dark">
+                                        ویرایش
+                                    </a>
+                                </li>
+
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span>ثبت آگهی شغلی جدید</span>
+                                    <a asp-controller="Job" asp-action="CreateJob" class="btn btn-sm btn-success">ایجاد</a>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span>مدیریت آگهی‌ها</span>
+                                    <a asp-controller="Job" asp-action="Index" class="btn btn-sm btn-outline-primary">مشاهده</a>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span>مشاهده درخواست‌های دریافتی</span>
+                                    <a asp-controller="Application" asp-action="EmployerApplications" class="btn btn-sm btn-outline-secondary">ورود به داشبورد</a>
+                                </li>
+
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            @if (me?.IsSeeker == true)
+            {
+                <div class="col-lg-6">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title mb-3">میانبرهای جویای کار</h5>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span>جستجوی همه فرصت‌ها</span>
+                                    <a asp-controller="Jobs" asp-action="Index" class="btn btn-sm btn-primary">جستجو</a>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span>درخواست‌های ارسال‌شده من</span>
+                                    <a asp-controller="Application" asp-action="MyApplications" class="btn btn-sm btn-outline-secondary">مشاهده</a>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span>تکمیل پروفایل</span>
+                                    <a asp-controller="SeekerProfile" asp-action="Edit" class="btn btn-sm btn-outline-dark">
+                                        ویرایش
+                                    </a>
+                                </li>
+
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            }
+
+
+        </div>
+    }
+
+    <!-- آگهی‌های جدید (برای همه) -->
     <div class="mt-4">
         <h5 class="mb-3">آگهی‌های جدید</h5>
-
         @if (Model != null && Model.Any())
         {
             <div class="row g-3">
